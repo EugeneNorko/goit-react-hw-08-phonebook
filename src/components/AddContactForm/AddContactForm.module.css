@@ -1,0 +1,24 @@
+.contacts__form {
+  border: 1px solid black;
+  padding: 15px;
+}
+
+.contacts__input {
+  display: block;
+}
+
+.contacts__label {
+  display: block;
+  padding: 10px 0 10px 0;
+}
+
+.button__submit {
+  display: block;
+  background-color: rgb(152, 187, 242);
+  color: black;
+  border: 1px solid rgb(22, 24, 82);
+  border-radius: 4px;
+  min-width: 80px;
+  height: 30px;
+  cursor: pointer;
+}
