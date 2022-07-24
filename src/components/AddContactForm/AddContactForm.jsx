@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+// import { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import css from './AddContactForm.module.css';
@@ -13,45 +13,43 @@ const initialValues = {
   number: '',
 };
 
-export class AddContactForm extends Component {
-  onSubmit = (values, { resetForm }) => {
-    this.props.onFormSubmit(values);
+export const AddContactForm = ({ onFormSubmit }) => {
+  const onSubmit = (values, { resetForm }) => {
+    onFormSubmit(values);
     resetForm();
   };
 
-  render() {
-    return (
-      <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={this.onSubmit}
-      >
-        <Form className={css.contacts__form}>
-          <label htmlFor="name" className={css.contacts__label}>
-            Name
-            <Field
-              id="name"
-              type="text"
-              name="name"
-              className={css.contacts__input}
-            />
-            <ErrorMessage name="name" />
-          </label>
-          <label htmlFor="number" className={css.contacts__label}>
-            Number
-            <Field
-              id="number"
-              type="tel"
-              name="number"
-              className={css.contacts__input}
-            />
-            <ErrorMessage name="number" />
-          </label>
-          <button className={css.button__submit} type="Submit">
-            Add contact
-          </button>
-        </Form>
-      </Formik>
-    );
-  }
-}
+  return (
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={onSubmit}
+    >
+      <Form className={css.contacts__form}>
+        <label htmlFor="name" className={css.contacts__label}>
+          Name
+          <Field
+            id="name"
+            type="text"
+            name="name"
+            className={css.contacts__input}
+          />
+          <ErrorMessage name="name" />
+        </label>
+        <label htmlFor="number" className={css.contacts__label}>
+          Number
+          <Field
+            id="number"
+            type="tel"
+            name="number"
+            className={css.contacts__input}
+          />
+          <ErrorMessage name="number" />
+        </label>
+        <button className={css.button__submit} type="Submit">
+          Add contact
+        </button>
+      </Form>
+    </Formik>
+  );
+};
