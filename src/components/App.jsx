@@ -1,44 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { AddContactForm } from './AddContactForm/AddContactForm';
 import { nanoid } from 'nanoid';
 import { Contacts } from './Contacts/Contacts';
 import { ContactFilter } from './ContactFilter/ContactFilter';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact, removeContact } from 'redux/contactSlice';
+import { changeFilter } from 'redux/filterSlice';
 
 export const App = () => {
-  const [contacts, setContacts] = useState(
-    JSON.parse(window.localStorage.getItem('contacts')) ?? []
-  );
-  const [filter, setFilter] = useState('');
+  const contactsState = useSelector(state => state.contacts);
+  const filterState = useSelector(state => state.filter);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    return window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+    return window.localStorage.setItem(
+      'contacts',
+      JSON.stringify(contactsState)
+    );
+  }, [contactsState]);
 
   const onFormSubmit = ({ name, number }) => {
-    // console.log(name);
-    const isAddedContact = contacts.find(contact => contact.name === name);
-
+    const isAddedContact = contactsState.find(contact => contact.name === name);
     if (isAddedContact) {
       return alert(`${name} is already in contacts`);
     }
-    setContacts([{ id: nanoid(), name, number }, ...contacts]);
+
+    dispatch(addContact([{ id: nanoid(), name, number }, ...contactsState]));
   };
 
   const onChangeFilter = e => {
-    setFilter(e.currentTarget.value);
+    dispatch(changeFilter(e.currentTarget.value));
   };
 
   const filteredContacts = () => {
-    const filterToLowerCase = filter.toLowerCase();
-
-    return contacts.filter(contact =>
+    const filterToLowerCase = filterState.toLowerCase();
+    return contactsState.filter(contact =>
       contact.name.toLowerCase().includes(filterToLowerCase)
     );
   };
 
   const deleteContact = id => {
-    let remainContacts = contacts.filter(contact => contact.id !== id);
-    return setContacts([...remainContacts]);
+    let remainContacts = contactsState.filter(contact => contact.id !== id);
+    return dispatch(removeContact(remainContacts));
   };
 
   return (
