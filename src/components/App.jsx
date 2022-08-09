@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { AddContactForm } from './AddContactForm/AddContactForm';
 import { nanoid } from 'nanoid';
 import { Contacts } from './Contacts/Contacts';
@@ -8,25 +7,17 @@ import { addContact, removeContact } from 'redux/contactSlice';
 import { changeFilter } from 'redux/filterSlice';
 
 export const App = () => {
-  const contactsState = useSelector(state => state.contacts);
+  const contactsState = useSelector(state => state.contacts.items);
   const filterState = useSelector(state => state.filter);
 
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    return window.localStorage.setItem(
-      'contacts',
-      JSON.stringify(contactsState)
-    );
-  }, [contactsState]);
 
   const onFormSubmit = ({ name, number }) => {
     const isAddedContact = contactsState.find(contact => contact.name === name);
     if (isAddedContact) {
       return alert(`${name} is already in contacts`);
     }
-
-    dispatch(addContact([{ id: nanoid(), name, number }, ...contactsState]));
+    dispatch(addContact({ id: nanoid(), name, number }));
   };
 
   const onChangeFilter = e => {
@@ -41,8 +32,7 @@ export const App = () => {
   };
 
   const deleteContact = id => {
-    let remainContacts = contactsState.filter(contact => contact.id !== id);
-    return dispatch(removeContact(remainContacts));
+    dispatch(removeContact(id));
   };
 
   return (
