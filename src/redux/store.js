@@ -1,8 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { filterSlice } from './filterSlice';
-import { contactPersistReducer } from './contactSlice';
+import { contactSlice } from './contactSlice';
 import {
-  persistStore,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -13,16 +11,13 @@ import {
 
 export const store = configureStore({
   reducer: {
-    contacts: contactPersistReducer,
-    filter: filterSlice.reducer,
+    contacts: contactSlice.reducer,
   },
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    });
+    }).concat();
   },
 });
-
-export const persistor = persistStore(store);

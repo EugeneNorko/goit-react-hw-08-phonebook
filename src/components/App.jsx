@@ -1,27 +1,26 @@
 import { AddContactForm } from './AddContactForm/AddContactForm';
-import { nanoid } from 'nanoid';
 import { Contacts } from './Contacts/Contacts';
 import { ContactFilter } from './ContactFilter/ContactFilter';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact, removeContact } from 'redux/contactSlice';
-import { changeFilter } from 'redux/filterSlice';
+import { addContact, getContact, deleteContact } from 'redux/contactOperations';
+import { useEffect } from 'react';
 
 export const App = () => {
   const contactsState = useSelector(state => state.contacts.items);
-  const filterState = useSelector(state => state.filter);
+  const filterState = useSelector(state => state.contacts.filter);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getContact());
+  }, [dispatch]);
 
   const onFormSubmit = ({ name, number }) => {
     const isAddedContact = contactsState.find(contact => contact.name === name);
     if (isAddedContact) {
       return alert(`${name} is already in contacts`);
     }
-    dispatch(addContact({ id: nanoid(), name, number }));
-  };
-
-  const onChangeFilter = e => {
-    dispatch(changeFilter(e.currentTarget.value));
+    dispatch(addContact({ name: name, number: number }));
   };
 
   const filteredContacts = () => {
@@ -31,8 +30,8 @@ export const App = () => {
     );
   };
 
-  const deleteContact = id => {
-    dispatch(removeContact(id));
+  const onDeleteContact = id => {
+    dispatch(deleteContact(id));
   };
 
   return (
@@ -40,8 +39,11 @@ export const App = () => {
       <h1 className="mainTitle">Phonebook</h1>
       <AddContactForm onFormSubmit={onFormSubmit} />
       <h2 className="secondaryTitle">Contacts</h2>
-      <ContactFilter onFilterContacts={onChangeFilter} />
-      <Contacts contacts={filteredContacts()} onDeleteContact={deleteContact} />
+      <ContactFilter />
+      <Contacts
+        contacts={filteredContacts()}
+        onDeleteContact={onDeleteContact}
+      />
     </div>
   );
 };
