@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkgoit_react_hw_08_phonebook=self.webpackChunkgoit_react_hw_08_phonebook||[]).push([[561],{6561:function(n,e,t){t.r(e),t.d(e,{default:function(){return s}});var o,i=t(168),c=(t(2791),t(6444)),h=t(184),r=c.ZP.div(o||(o=(0,i.Z)(["\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  min-height: 70vh;\n"])));function s(){return(0,h.jsx)(r,{children:(0,h.jsx)("h1",{children:"Hello, this is your best book of contacts \u2764\ufe0f"})})}}}]);
+//# sourceMappingURL=561.1570da26.chunk.js.map
