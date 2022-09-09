@@ -8,9 +8,9 @@ import {
   addContactApi,
   getContactApi,
   deleteContactApi,
-} from './utils/mockApi';
+} from '../utils/SwaggerApi';
 
-export const addContact = contact => (dispatch, getState) => {
+export const addContact = contact => (dispatch, _) => {
   dispatch(addContactRequest());
   addContactApi(contact)
     .then(newContact => dispatch(addContactSuccess(newContact)))

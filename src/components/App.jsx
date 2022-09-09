@@ -1,49 +1,59 @@
-import { AddContactForm } from './AddContactForm/AddContactForm';
-import { Contacts } from './Contacts/Contacts';
-import { ContactFilter } from './ContactFilter/ContactFilter';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact, getContact, deleteContact } from 'redux/contactOperations';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './Layout';
+import { lazy } from 'react';
+import { useDispatch } from 'react-redux';
+import { useAuth } from 'hooks/useAuth';
 import { useEffect } from 'react';
+import operations from 'redux/auth/AuthOperations';
+import PublicRoute from './PublicRoute';
+import PrivateRoute from './PrivateRoute';
+
+const HomeView = lazy(() => import('../views/HomeView'));
+const LoginView = lazy(() => import('../views/LoginView'));
+const RegisterView = lazy(() => import('../views/RegisterView'));
+const ContactView = lazy(() => import('../views/ContactView'));
 
 export const App = () => {
-  const contactsState = useSelector(state => state.contacts.items);
-  const filterState = useSelector(state => state.contacts.filter);
-
   const dispatch = useDispatch();
+  const { isRefreshing } = useAuth();
 
   useEffect(() => {
-    dispatch(getContact());
+    dispatch(operations.fetchCurrentUser());
   }, [dispatch]);
 
-  const onFormSubmit = ({ name, number }) => {
-    const isAddedContact = contactsState.find(contact => contact.name === name);
-    if (isAddedContact) {
-      return alert(`${name} is already in contacts`);
-    }
-    dispatch(addContact({ name: name, number: number }));
-  };
-
-  const filteredContacts = () => {
-    const filterToLowerCase = filterState.toLowerCase();
-    return contactsState.filter(contact =>
-      contact.name.toLowerCase().includes(filterToLowerCase)
-    );
-  };
-
-  const onDeleteContact = id => {
-    dispatch(deleteContact(id));
-  };
-
-  return (
-    <div className="container">
-      <h1 className="mainTitle">Phonebook</h1>
-      <AddContactForm onFormSubmit={onFormSubmit} />
-      <h2 className="secondaryTitle">Contacts</h2>
-      <ContactFilter />
-      <Contacts
-        contacts={filteredContacts()}
-        onDeleteContact={onDeleteContact}
-      />
-    </div>
+  return isRefreshing ? (
+    <h1>Loading...</h1>
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<PublicRoute component={<HomeView />} />} />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute
+              restricted
+              redirectTo="/contacts"
+              component={<RegisterView />}
+            />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute
+              restricted
+              redirectTo="/contacts"
+              component={<LoginView />}
+            />
+          }
+        />
+        <Route
+          path="/contacts"
+          element={
+            <PrivateRoute redirectTo="/login" component={<ContactView />} />
+          }
+        />
+      </Route>
+    </Routes>
   );
 };
